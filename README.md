@@ -63,84 +63,54 @@
 
 ## 🚀 下載安裝（推薦）
 
-### 直接下載 Release
-
-1. 前往 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 下載：
-   - **`yWatchlist_1.0.0_x64-setup.exe`** - Windows 安裝程式
-   - **`python-embed-full.zip`** - Python 運行時
-
-2. 安裝 `yWatchlist_1.0.0_x64-setup.exe`
-3. 解壓縮 `python-embed-full.zip` 到安裝目錄
-4. 啟動 yWatchlist
+直接下載 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 中的 **`yWatchlist_1.0.0_x64-setup.exe`**，執行即可，無需其他檔案。
 
 ---
 
-## 🔧 從源碼建置
+## 🔧 從源碼建置（開發者）
 
-### 1. 安裝前端相依套件
+### 必要條件
 
+- **Node.js：** v18 以上
+- **Rust 工具鏈：** 建議使用 `rustup`
+
+### 步驟
+
+1. **Clone 專案**
+```bash
+git clone https://github.com/aneterw/yWatchlist.git
+```
+
+2. **下載 Python 運行時**
+從 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 下載 **`python-embed-full.zip`**，解壓縮到專案根目錄：
+```
+yWatchlist/
+├── python-embed-full/   ← 解壓縮到這裡
+├── src/
+├── src-tauri/
+└── ...
+```
+
+3. **安裝前端相依套件**
 ```bash
 npm install
 ```
 
-### 2. 安裝 Python 後端相依套件
-
+4. **執行或建置**
 ```bash
-pip install -r python/requirements.txt
-```
-
-或單獨安裝：
-
-```bash
-pip install yfinance pandas numpy
-```
-
-Python 後端提供以下功能：
-- **報價資料** — 透過 `yfinance` 取得延遲行情
-- **K 線歷史資料** — 供圖表渲染使用
-- **基本面分析資料** — 財務比率、獲利能力、現金流等
-- **股票新聞** — 取得最新相關報導
-
-若未安裝 Python，應用程式仍可使用**模擬報價資料**正常運作，方便探索介面與圖表功能。
-
-### 3. 驗證安裝
-
-首次啟動時，應用程式會自動檢查 Python 環境與後端腳本是否存在。若任一缺失，視窗頂部會出現黃色警告橫幅，並提供 Python 下載連結。
-
----
-
-## 執行應用程式
-
-### 開發模式 — Tauri 桌面應用程式（推薦）
-
-```bash
+# 開發模式
 npm run tauri dev
-```
 
-啟動原生桌面視窗，可完整使用 Python 後端取得真實資料。
-
-### 開發模式 — 純網頁預覽
-
-```bash
-npm run dev
-```
-
-在瀏覽器中開啟 React 應用程式。適合前端除錯。注意：由於 Python 後端運行在 Tauri 內部，純網頁模式下報價會回退為模擬資料。
-
-### 建置發布版本
-
-```bash
+# 建置發布版本
 npm run tauri build
 ```
-
-產出的安裝檔位於 `src-tauri/target/release/`。
 
 ---
 
 ## 快速開始
 
 ```
-1. 安裝相依套件：npm install && pip install -r python/requirements.txt
+1. 安裝相依套件：npm install
 2. 啟動應用程式：npm run tauri dev
 3. 左側邊欄預設顯示「Global Indices」全球指數清單
 4. 點擊「Refresh Current」手動更新，或等待每 10 分鐘自動更新
@@ -408,7 +378,7 @@ React UI → Tauri Rust 後端 → Python 腳本（yfinance）→ JSON 回應 �
 ### Q：偵測不到 Python 後端？
 
 - 視窗頂部會出現黃色警告橫幅
-- 點擊下載連結取得 Python，然後重新安裝相依套件：`pip install -r python/requirements.txt`
+- 點擊下載連結取得 Python 運行時，解壓縮到專案根目錄
 - 即使沒有 Python，應用程式仍可正常使用模擬資料
 
 ### Q：如何重置所有資料？
@@ -476,84 +446,54 @@ A modern cross-platform desktop watchlist manager for **stocks, indices, ETFs, f
 
 ## 🚀 Download & Install (Recommended)
 
-### Download Release Directly
-
-1. Go to [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and download:
-   - **`yWatchlist_1.0.0_x64-setup.exe`** - Windows Installer
-   - **`python-embed-full.zip`** - Python Runtime
-
-2. Install `yWatchlist_1.0.0_x64-setup.exe`
-3. Extract `python-embed-full.zip` to the install directory
-4. Launch yWatchlist
+Download **`yWatchlist_1.0.0_x64-setup.exe`** from [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and run it. No additional files needed.
 
 ---
 
-## 🔧 Build from Source
+## 🔧 Build from Source (Developers)
 
-### 1. Install Frontend Dependencies
+### Prerequisites
 
+- **Node.js:** v18 or higher
+- **Rust toolchain:** `rustup` recommended
+
+### Steps
+
+1. **Clone the project**
+```bash
+git clone https://github.com/aneterw/yWatchlist.git
+```
+
+2. **Download Python Runtime**
+Download **`python-embed-full.zip`** from [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and extract to the project root:
+```
+yWatchlist/
+├── python-embed-full/   ← extract here
+├── src/
+├── src-tauri/
+└── ...
+```
+
+3. **Install dependencies**
 ```bash
 npm install
 ```
 
-### 2. Install Python Backend Dependencies
-
+4. **Run or build**
 ```bash
-pip install -r python/requirements.txt
-```
-
-Or install individually:
-
-```bash
-pip install yfinance pandas numpy
-```
-
-The Python backend provides:
-- **Price quotes** via `yfinance`
-- **K-line historical data** for chart rendering
-- **Fundamental analysis data** (financial ratios, earnings, cash flow)
-- **Stock news** retrieval
-
-If Python is not available, the app falls back to **mock price data** so you can still explore the UI and chart features.
-
-### 3. Verify Setup
-
-On first launch, the app checks whether Python and the backend script exist. If either is missing, a yellow warning banner appears at the top of the window with a download link.
-
----
-
-## Running the App
-
-### Development Mode — Full Tauri Desktop App (Recommended)
-
-```bash
+# Development mode
 npm run tauri dev
-```
 
-This launches the native desktop window with access to the Python backend for real data.
-
-### Development Mode — Web Preview Only
-
-```bash
-npm run dev
-```
-
-Opens the React app in a browser. Useful for frontend-only debugging. Note: real data fetching will fall back to mock data since the Python backend runs inside Tauri.
-
-### Build Release
-
-```bash
+# Build release
 npm run tauri build
 ```
-
-Produces an installer in `src-tauri/target/release/`.
 
 ---
 
 ## Getting Started
 
 ```
-1. Install dependencies: npm install && pip install -r python/requirements.txt
+1. Install dependencies: npm install
 2. Launch: npm run tauri dev
 3. Browse the default "Global Indices" list on the left sidebar
 4. Click "Refresh Current" or wait for automatic 10-minute updates
@@ -819,7 +759,7 @@ React UI → Tauri Rust backend → Python script (yfinance) → JSON response �
 ### Q: Python backend not detected?
 
 - A yellow warning banner appears at the top of the window
-- Click the download link to get Python, then reinstall dependencies: `pip install -r python/requirements.txt`
+- Click the download link to get Python runtime, extract to the project root
 - The app remains fully usable with mock data even without Python
 
 ### Q: How to reset all data?
