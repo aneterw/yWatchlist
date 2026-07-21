@@ -57,14 +57,25 @@
 ## 系統需求
 
 - **作業系統：** Windows 10 / 11（64 位元）
-- **Node.js：** v18 以上
-- **Python：** v3.8 以上（用於後端資料抓取）
-- **Rust 工具鏈：** 僅在建置 Tauri 發行版時需要（建議使用 `rustup`）
 - **WebView2：** Windows 10/11 已內建；若無請從 [Microsoft 官方](https://developer.microsoft.com/zh-tw/microsoft-edge/webview2/) 下載安裝
 
 ---
 
-## 安裝步驟
+## 🚀 下載安裝（推薦）
+
+### 直接下載 Release
+
+1. 前往 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 下載：
+   - **`yWatchlist_1.0.0_x64-setup.exe`** - Windows 安裝程式
+   - **`python-embed-full.zip`** - Python 運行時
+
+2. 安裝 `yWatchlist_1.0.0_x64-setup.exe`
+3. 解壓縮 `python-embed-full.zip` 到安裝目錄
+4. 啟動 yWatchlist
+
+---
+
+## 🔧 從源碼建置
 
 ### 1. 安裝前端相依套件
 
@@ -459,14 +470,25 @@ A modern cross-platform desktop watchlist manager for **stocks, indices, ETFs, f
 ## System Requirements
 
 - **OS:** Windows 10/11 (64-bit)
-- **Node.js:** v18 or higher
-- **Python:** v3.8 or higher (for backend data fetching)
-- **Rust toolchain:** Required only for building Tauri releases (`rustup` recommended)
 - **WebView2:** Pre-installed on Windows 10/11; otherwise install from [Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
 
 ---
 
-## Installation
+## 🚀 Download & Install (Recommended)
+
+### Download Release Directly
+
+1. Go to [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and download:
+   - **`yWatchlist_1.0.0_x64-setup.exe`** - Windows Installer
+   - **`python-embed-full.zip`** - Python Runtime
+
+2. Install `yWatchlist_1.0.0_x64-setup.exe`
+3. Extract `python-embed-full.zip` to the install directory
+4. Launch yWatchlist
+
+---
+
+## 🔧 Build from Source
 
 ### 1. Install Frontend Dependencies
 
