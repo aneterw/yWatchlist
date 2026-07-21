@@ -63,7 +63,7 @@
 
 ## 🚀 下載安裝（推薦）
 
-直接下載 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 中的 **`yWatchlist_1.0.0_x64-setup.exe`**，執行即可，無需其他檔案。
+直接下載 [Releases](https://github.com/aneterw/yWatchlist/releases/latest) 中的 **`yWatchlist_1.0.1_x64-setup.exe`**，執行即可，無需其他檔案。
 
 ---
 
@@ -446,7 +446,7 @@ A modern cross-platform desktop watchlist manager for **stocks, indices, ETFs, f
 
 ## 🚀 Download & Install (Recommended)
 
-Download **`yWatchlist_1.0.0_x64-setup.exe`** from [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and run it. No additional files needed.
+Download **`yWatchlist_1.0.1_x64-setup.exe`** from [Releases](https://github.com/aneterw/yWatchlist/releases/latest) and run it. No additional files needed.
 
 ---
 

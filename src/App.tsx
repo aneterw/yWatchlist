@@ -329,7 +329,8 @@ function App() {
         priceResult = generateMockPriceData(tickersToFetch);
       }
 
-      setPriceData(priceResult);
+      // Merge with existing price data to preserve prices from other watchlists
+      setPriceData(prev => ({ ...prev, ...priceResult }));
       const now = new Date();
       setLastUpdateTimes(prev => {
         const next = { ...prev };
@@ -371,10 +372,13 @@ function App() {
           prices.forEach((p) => {
             priceResult[p.ticker] = p;
           });
-          setPriceData(priceResult);
+          // Merge with existing price data to preserve prices from other watchlists
+          setPriceData(prev => ({ ...prev, ...priceResult }));
         })
         .catch(() => {
-          setPriceData(generateMockPriceData(tickersToFetch));
+          // Generate mock data and merge with existing prices
+          const mockData = generateMockPriceData(tickersToFetch);
+          setPriceData(prev => ({ ...prev, ...mockData }));
         })
         .finally(() => {
           setIsLoading(false);
