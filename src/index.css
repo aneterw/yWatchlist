@@ -1,0 +1,511 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Dark Theme (default) - 統一背景 + 白色文字 */
+:root, :root.dark {
+  /* 統一背景 - 全部相同 */
+  --background: rgba(26, 26, 26, 0.98);
+  --foreground: #f0f0f0;
+  --card: rgba(26, 26, 26, 0.98);
+  --card-foreground: #f0f0f0;
+  --popover: rgba(26, 26, 26, 0.98);
+  --popover-foreground: #f0f0f0;
+  --primary: #ffffff;
+  --primary-foreground: #1a1a1a;
+  --secondary: rgba(26, 26, 26, 0.98);
+  --secondary-foreground: #f0f0f0;
+  --muted: rgba(26, 26, 26, 0.98);
+  --muted-foreground: #c0c0c0;
+  --accent: rgba(50, 50, 50, 0.98);
+  --accent-foreground: #f0f0f0;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #666666;
+  --input: #666666;
+  --ring: #ffffff;
+  /* Aliases */
+  --color-background: rgba(26, 26, 26, 0.98);
+  --color-foreground: #f0f0f0;
+  --color-card: rgba(26, 26, 26, 0.98);
+  --color-card-foreground: #f0f0f0;
+  --color-popover: rgba(26, 26, 26, 0.98);
+  --color-popover-foreground: #f0f0f0;
+  --color-primary: #ffffff;
+  --color-primary-foreground: #1a1a1a;
+  --color-secondary: rgba(26, 26, 26, 0.98);
+  --color-secondary-foreground: #f0f0f0;
+  --color-muted: rgba(26, 26, 26, 0.98);
+  --color-muted-foreground: #c0c0c0;
+  --color-accent: rgba(50, 50, 50, 0.98);
+  --color-accent-foreground: #f0f0f0;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #666666;
+  --color-input: #666666;
+  --color-ring: #ffffff;
+}
+
+/* Ocean Theme - 統一背景 */
+:root.ocean {
+  --background: #0f172a;
+  --foreground: #f0f0f0;
+  --card: #0f172a;
+  --card-foreground: #f0f0f0;
+  --popover: #0f172a;
+  --popover-foreground: #f0f0f0;
+  --primary: #fbbf24;
+  --primary-foreground: #0f172a;
+  --secondary: #0f172a;
+  --secondary-foreground: #f0f0f0;
+  --muted: #0f172a;
+  --muted-foreground: #a0b0c0;
+  --accent: #1e293b;
+  --accent-foreground: #f0f0f0;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #334155;
+  --ring: #fbbf24;
+  /* Aliases */
+  --color-background: #0f172a;
+  --color-foreground: #f0f0f0;
+  --color-card: #0f172a;
+  --color-card-foreground: #f0f0f0;
+  --color-popover: #0f172a;
+  --color-popover-foreground: #f0f0f0;
+  --color-primary: #fbbf24;
+  --color-primary-foreground: #0f172a;
+  --color-secondary: #0f172a;
+  --color-secondary-foreground: #f0f0f0;
+  --color-muted: #0f172a;
+  --color-muted-foreground: #a0b0c0;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f0f0f0;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #334155;
+  --color-input: #334155;
+  --color-ring: #fbbf24;
+}
+
+/* Forest Theme - 統一背景 */
+:root.forest {
+  --background: #1a2e1a;
+  --foreground: #f0f0f0;
+  --card: #1a2e1a;
+  --card-foreground: #f0f0f0;
+  --popover: #1a2e1a;
+  --popover-foreground: #f0f0f0;
+  --primary: #c4b896;
+  --primary-foreground: #1a2e1a;
+  --secondary: #1a2e1a;
+  --secondary-foreground: #f0f0f0;
+  --muted: #1a2e1a;
+  --muted-foreground: #a0c0a0;
+  --accent: #2d4a2d;
+  --accent-foreground: #f0f0f0;
+  --destructive: #c45c5c;
+  --destructive-foreground: #ffffff;
+  --border: #3d5c3d;
+  --input: #3d5c3d;
+  --ring: #c4b896;
+  /* Aliases */
+  --color-background: #1a2e1a;
+  --color-foreground: #f0f0f0;
+  --color-card: #1a2e1a;
+  --color-card-foreground: #f0f0f0;
+  --color-popover: #1a2e1a;
+  --color-popover-foreground: #f0f0f0;
+  --color-primary: #c4b896;
+  --color-primary-foreground: #1a2e1a;
+  --color-secondary: #1a2e1a;
+  --color-secondary-foreground: #f0f0f0;
+  --color-muted: #1a2e1a;
+  --color-muted-foreground: #a0c0a0;
+  --color-accent: #2d4a2d;
+  --color-accent-foreground: #f0f0f0;
+  --color-destructive: #c45c5c;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #3d5c3d;
+  --color-input: #3d5c3d;
+  --color-ring: #c4b896;
+}
+
+/* Sunset Theme - 統一背景 */
+:root.sunset {
+  --background: #1e1b4b;
+  --foreground: #fef3c7;
+  --card: #1e1b4b;
+  --card-foreground: #fef3c7;
+  --popover: #1e1b4b;
+  --popover-foreground: #fef3c7;
+  --primary: #fb923c;
+  --primary-foreground: #1e1b4b;
+  --secondary: #1e1b4b;
+  --secondary-foreground: #fef3c7;
+  --muted: #1e1b4b;
+  --muted-foreground: #c0c0e0;
+  --accent: #312e81;
+  --accent-foreground: #fef3c7;
+  --destructive: #f87171;
+  --destructive-foreground: #1e1b4b;
+  --border: #4338ca;
+  --input: #4338ca;
+  --ring: #fb923c;
+  /* Aliases */
+  --color-background: #1e1b4b;
+  --color-foreground: #fef3c7;
+  --color-card: #1e1b4b;
+  --color-card-foreground: #fef3c7;
+  --color-popover: #1e1b4b;
+  --color-popover-foreground: #fef3c7;
+  --color-primary: #fb923c;
+  --color-primary-foreground: #1e1b4b;
+  --color-secondary: #1e1b4b;
+  --color-secondary-foreground: #fef3c7;
+  --color-muted: #1e1b4b;
+  --color-muted-foreground: #c0c0e0;
+  --color-accent: #312e81;
+  --color-accent-foreground: #fef3c7;
+  --color-destructive: #f87171;
+  --color-destructive-foreground: #1e1b4b;
+  --color-border: #4338ca;
+  --color-input: #4338ca;
+  --color-ring: #fb923c;
+}
+
+/* Neon Theme - 統一背景 */
+:root.neon {
+  --background: #2d2d2d;
+  --foreground: #ffffff;
+  --card: #2d2d2d;
+  --card-foreground: #ffffff;
+  --popover: #2d2d2d;
+  --popover-foreground: #ffffff;
+  --primary: #ff6b4a;
+  --primary-foreground: #2d2d2d;
+  --secondary: #2d2d2d;
+  --secondary-foreground: #ffffff;
+  --muted: #2d2d2d;
+  --muted-foreground: #c0c0c0;
+  --accent: #3d3d3d;
+  --accent-foreground: #ff6b4a;
+  --destructive: #e54b4b;
+  --destructive-foreground: #ffffff;
+  --border: #5a5a5a;
+  --input: #5a5a5a;
+  --ring: #ff6b4a;
+  /* Aliases */
+  --color-background: #2d2d2d;
+  --color-foreground: #ffffff;
+  --color-card: #2d2d2d;
+  --color-card-foreground: #ffffff;
+  --color-popover: #2d2d2d;
+  --color-popover-foreground: #ffffff;
+  --color-primary: #ff6b4a;
+  --color-primary-foreground: #2d2d2d;
+  --color-secondary: #2d2d2d;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #2d2d2d;
+  --color-muted-foreground: #c0c0c0;
+  --color-accent: #3d3d3d;
+  --color-accent-foreground: #ff6b4a;
+  --color-destructive: #e54b4b;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #5a5a5a;
+  --color-input: #5a5a5a;
+  --color-ring: #ff6b4a;
+}
+
+/* Elegant Theme - 統一背景 */
+:root.elegant {
+  --background: #1a1a1a;
+  --foreground: #f0f0f0;
+  --card: #1a1a1a;
+  --card-foreground: #f0f0f0;
+  --popover: #1a1a1a;
+  --popover-foreground: #f0f0f0;
+  --primary: #d4af37;
+  --primary-foreground: #1a1a1a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f0f0f0;
+  --muted: #1a1a1a;
+  --muted-foreground: #c0a0a0;
+  --accent: #2d2020;
+  --accent-foreground: #d4af37;
+  --destructive: #c45c5c;
+  --destructive-foreground: #ffffff;
+  --border: #5d4040;
+  --input: #5d4040;
+  --ring: #d4af37;
+  /* Aliases */
+  --color-background: #1a1a1a;
+  --color-foreground: #f0f0f0;
+  --color-card: #1a1a1a;
+  --color-card-foreground: #f0f0f0;
+  --color-popover: #1a1a1a;
+  --color-popover-foreground: #f0f0f0;
+  --color-primary: #d4af37;
+  --color-primary-foreground: #1a1a1a;
+  --color-secondary: #1a1a1a;
+  --color-secondary-foreground: #f0f0f0;
+  --color-muted: #1a1a1a;
+  --color-muted-foreground: #c0a0a0;
+  --color-accent: #2d2020;
+  --color-accent-foreground: #d4af37;
+  --color-destructive: #c45c5c;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #5d4040;
+  --color-input: #5d4040;
+  --color-ring: #d4af37;
+}
+
+/* Frosted Purple Theme - 深色底煙燻彩玻 */
+:root.frosted-purple {
+  /* 深色底層背景 */
+  --background: #0E1629;
+  --foreground: rgba(255, 255, 255, 0.95);
+  --card: rgba(160, 130, 240, 0.09);
+  --card-foreground: rgba(255, 255, 255, 0.95);
+  --popover: rgba(160, 130, 240, 0.09);
+  --popover-foreground: rgba(255, 255, 255, 0.95);
+  --primary: rgba(200, 175, 255, 0.9);
+  --primary-foreground: #0E1629;
+  --secondary: rgba(160, 130, 240, 0.08);
+  --secondary-foreground: rgba(255, 255, 255, 0.75);
+  --muted: rgba(160, 130, 240, 0.06);
+  --muted-foreground: rgba(255, 255, 255, 0.5);
+  --accent: rgba(160, 130, 240, 0.12);
+  --accent-foreground: rgba(255, 255, 255, 0.9);
+  --destructive: rgba(239, 68, 68, 0.8);
+  --destructive-foreground: #ffffff;
+  --border: rgba(200, 175, 255, 0.2);
+  --input: rgba(200, 175, 255, 0.25);
+  --ring: rgba(200, 175, 255, 0.9);
+  /* Aliases */
+  --color-background: #0E1629;
+  --color-foreground: rgba(255, 255, 255, 0.95);
+  --color-card: rgba(160, 130, 240, 0.09);
+  --color-card-foreground: rgba(255, 255, 255, 0.95);
+  --color-popover: rgba(160, 130, 240, 0.09);
+  --color-popover-foreground: rgba(255, 255, 255, 0.95);
+  --color-primary: rgba(200, 175, 255, 0.9);
+  --color-primary-foreground: #0E1629;
+  --color-secondary: rgba(160, 130, 240, 0.08);
+  --color-secondary-foreground: rgba(255, 255, 255, 0.75);
+  --color-muted: rgba(160, 130, 240, 0.06);
+  --color-muted-foreground: rgba(255, 255, 255, 0.5);
+  --color-accent: rgba(160, 130, 240, 0.12);
+  --color-accent-foreground: rgba(255, 255, 255, 0.9);
+  --color-destructive: rgba(239, 68, 68, 0.8);
+  --color-destructive-foreground: #ffffff;
+  --color-border: rgba(200, 175, 255, 0.2);
+  --color-input: rgba(200, 175, 255, 0.25);
+  --color-ring: rgba(200, 175, 255, 0.9);
+  /* 玻璃效果增強 */
+  --glass-blur: 12px;
+  --glass-shadow: 0 4px 20px rgba(120, 80, 200, 0.1);
+  --glass-border: rgba(200, 175, 255, 0.2);
+}
+
+/* Frosted Purple 背景圖案 */
+:root.frosted-purple {
+  background:
+    /* 雲霧漸變肌理 */
+    radial-gradient(ellipse at 20% 80%, rgba(100, 80, 180, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(140, 100, 220, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(120, 90, 200, 0.08) 0%, transparent 60%),
+    /* 細微點狀雜紋 */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E"),
+    /* 底色漸層 */
+    linear-gradient(150deg, #0E1629 0%, #15223F 50%, #0F1930 100%);
+  background-attachment: fixed;
+}
+
+/* Frosted Purple 玻璃面板效果 */
+:root.frosted-purple .glass-panel,
+:root.frosted-purple [data-glass] {
+  background: rgba(160, 130, 240, 0.09);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 175, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(120, 80, 200, 0.1);
+}
+
+:root.frosted-purple .glass-panel-accent,
+:root.frosted-purple [data-glass-accent] {
+  background: rgba(160, 130, 240, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 175, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(120, 80, 200, 0.12);
+}
+
+/* Frosted Blue Theme - 冰藍透玻璃 */
+:root.frosted-blue {
+  --background: #0E1629;
+  --foreground: rgba(255, 255, 255, 0.95);
+  --card: rgba(110, 190, 255, 0.10);
+  --card-foreground: rgba(255, 255, 255, 0.95);
+  --popover: rgba(110, 190, 255, 0.10);
+  --popover-foreground: rgba(255, 255, 255, 0.95);
+  --primary: rgba(160, 220, 255, 0.9);
+  --primary-foreground: #0E1629;
+  --secondary: rgba(110, 190, 255, 0.08);
+  --secondary-foreground: rgba(255, 255, 255, 0.75);
+  --muted: rgba(110, 190, 255, 0.06);
+  --muted-foreground: rgba(255, 255, 255, 0.5);
+  --accent: rgba(110, 190, 255, 0.12);
+  --accent-foreground: rgba(255, 255, 255, 0.9);
+  --destructive: rgba(239, 68, 68, 0.8);
+  --destructive-foreground: #ffffff;
+  --border: rgba(160, 220, 255, 0.22);
+  --input: rgba(160, 220, 255, 0.25);
+  --ring: rgba(160, 220, 255, 0.9);
+  --color-background: #0E1629;
+  --color-foreground: rgba(255, 255, 255, 0.95);
+  --color-card: rgba(110, 190, 255, 0.10);
+  --color-card-foreground: rgba(255, 255, 255, 0.95);
+  --color-popover: rgba(110, 190, 255, 0.10);
+  --color-popover-foreground: rgba(255, 255, 255, 0.95);
+  --color-primary: rgba(160, 220, 255, 0.9);
+  --color-primary-foreground: #0E1629;
+  --color-secondary: rgba(110, 190, 255, 0.08);
+  --color-secondary-foreground: rgba(255, 255, 255, 0.75);
+  --color-muted: rgba(110, 190, 255, 0.06);
+  --color-muted-foreground: rgba(255, 255, 255, 0.5);
+  --color-accent: rgba(110, 190, 255, 0.12);
+  --color-accent-foreground: rgba(255, 255, 255, 0.9);
+  --color-destructive: rgba(239, 68, 68, 0.8);
+  --color-destructive-foreground: #ffffff;
+  --color-border: rgba(160, 220, 255, 0.22);
+  --color-input: rgba(160, 220, 255, 0.25);
+  --color-ring: rgba(160, 220, 255, 0.9);
+  --glass-blur: 12px;
+  --glass-shadow: 0 4px 20px rgba(60, 140, 220, 0.12);
+  --glass-border: rgba(160, 220, 255, 0.22);
+}
+
+:root.frosted-blue {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(80, 140, 220, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(100, 160, 240, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(90, 150, 220, 0.08) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E"),
+    linear-gradient(150deg, #0E1629 0%, #15233F 50%, #0F1930 100%);
+  background-attachment: fixed;
+}
+
+:root.frosted-blue .glass-panel,
+:root.frosted-blue [data-glass] {
+  background: rgba(110, 190, 255, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160, 220, 255, 0.22);
+  box-shadow: 0 4px 20px rgba(60, 140, 220, 0.12);
+}
+
+:root.frosted-blue .glass-panel-accent,
+:root.frosted-blue [data-glass-accent] {
+  background: rgba(110, 190, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160, 220, 255, 0.28);
+  box-shadow: 0 4px 20px rgba(60, 140, 220, 0.15);
+}
+
+/* Frosted Cyan Theme - 青綠透玻璃 */
+:root.frosted-cyan {
+  --background: #0E1629;
+  --foreground: rgba(255, 255, 255, 0.95);
+  --card: rgba(80, 210, 190, 0.08);
+  --card-foreground: rgba(255, 255, 255, 0.95);
+  --popover: rgba(80, 210, 190, 0.08);
+  --popover-foreground: rgba(255, 255, 255, 0.95);
+  --primary: rgba(130, 240, 220, 0.9);
+  --primary-foreground: #0E1629;
+  --secondary: rgba(80, 210, 190, 0.06);
+  --secondary-foreground: rgba(255, 255, 255, 0.75);
+  --muted: rgba(80, 210, 190, 0.05);
+  --muted-foreground: rgba(255, 255, 255, 0.5);
+  --accent: rgba(80, 210, 190, 0.10);
+  --accent-foreground: rgba(255, 255, 255, 0.9);
+  --destructive: rgba(239, 68, 68, 0.8);
+  --destructive-foreground: #ffffff;
+  --border: rgba(130, 240, 220, 0.18);
+  --input: rgba(130, 240, 220, 0.22);
+  --ring: rgba(130, 240, 220, 0.9);
+  --color-background: #0E1629;
+  --color-foreground: rgba(255, 255, 255, 0.95);
+  --color-card: rgba(80, 210, 190, 0.08);
+  --color-card-foreground: rgba(255, 255, 255, 0.95);
+  --color-popover: rgba(80, 210, 190, 0.08);
+  --color-popover-foreground: rgba(255, 255, 255, 0.95);
+  --color-primary: rgba(130, 240, 220, 0.9);
+  --color-primary-foreground: #0E1629;
+  --color-secondary: rgba(80, 210, 190, 0.06);
+  --color-secondary-foreground: rgba(255, 255, 255, 0.75);
+  --color-muted: rgba(80, 210, 190, 0.05);
+  --color-muted-foreground: rgba(255, 255, 255, 0.5);
+  --color-accent: rgba(80, 210, 190, 0.10);
+  --color-accent-foreground: rgba(255, 255, 255, 0.9);
+  --color-destructive: rgba(239, 68, 68, 0.8);
+  --color-destructive-foreground: #ffffff;
+  --color-border: rgba(130, 240, 220, 0.18);
+  --color-input: rgba(130, 240, 220, 0.22);
+  --color-ring: rgba(130, 240, 220, 0.9);
+  --glass-blur: 12px;
+  --glass-shadow: 0 4px 20px rgba(30, 180, 160, 0.09);
+  --glass-border: rgba(130, 240, 220, 0.18);
+}
+
+:root.frosted-cyan {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(50, 160, 150, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(80, 200, 180, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(60, 180, 170, 0.08) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E"),
+    linear-gradient(150deg, #0E1629 0%, #15233F 50%, #0F1930 100%);
+  background-attachment: fixed;
+}
+
+:root.frosted-cyan .glass-panel,
+:root.frosted-cyan [data-glass] {
+  background: rgba(80, 210, 190, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(130, 240, 220, 0.18);
+  box-shadow: 0 4px 20px rgba(30, 180, 160, 0.09);
+}
+
+:root.frosted-cyan .glass-panel-accent,
+:root.frosted-cyan [data-glass-accent] {
+  background: rgba(80, 210, 190, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(130, 240, 220, 0.24);
+  box-shadow: 0 4px 20px rgba(30, 180, 160, 0.12);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted-foreground); }
+
+/* Price change colors */
+.text-green-500 { color: #22c55e; }
+.text-red-500 { color: #ef4444; }
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}

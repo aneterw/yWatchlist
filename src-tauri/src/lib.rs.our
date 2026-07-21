@@ -1,0 +1,558 @@
+use serde::{Deserialize, Serialize};
+use std::path::Path;
+use std::process::Command;
+
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
+
+const CREATE_NO_WINDOW: u32 = 0x08000000;
+
+#[cfg(windows)]
+fn hidden_command(program: &std::path::Path) -> Command {
+    let mut cmd = Command::new(program);
+    cmd.creation_flags(CREATE_NO_WINDOW);
+    cmd
+}
+
+#[cfg(not(windows))]
+fn hidden_command(program: &std::path::Path) -> Command {
+    Command::new(program)
+}
+
+#[cfg(windows)]
+fn hidden_command_str(program: &str) -> Command {
+    let mut cmd = Command::new(program);
+    cmd.creation_flags(CREATE_NO_WINDOW);
+    cmd
+}
+
+#[cfg(not(windows))]
+fn hidden_command_str(program: &str) -> Command {
+    Command::new(program)
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PriceData {
+    pub ticker: String,
+    #[serde(rename = "name")]
+    pub name: String,
+    #[serde(rename = "price")]
+    pub price: Option<f64>,
+    #[serde(rename = "change")]
+    pub change: Option<f64>,
+    #[serde(rename = "pct_change")]
+    pub pct_change: Option<f64>,
+    #[serde(rename = "volume")]
+    pub volume: Option<i64>,
+    #[serde(rename = "market_cap")]
+    pub market_cap: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct WatchlistData {
+    #[serde(rename = "active_wl")]
+    pub active_wl: Option<String>,
+    #[serde(rename = "watchlists")]
+    pub watchlists: serde_json::Value,
+    #[serde(rename = "lang")]
+    pub lang: Option<String>,
+    #[serde(rename = "theme")]
+    pub theme: Option<String>,
+    #[serde(rename = "alerts")]
+    pub alerts: serde_json::Value,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SearchResult {
+    pub display: String,
+    pub symbol: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ChartData {
+    pub date: String,
+    pub open: f64,
+    pub high: f64,
+    pub low: f64,
+    pub close: f64,
+    pub volume: i64,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FundamentalData {
+    // Company Info
+    pub ticker: String,
+    #[serde(rename = "company_name")]
+    pub company_name: String,
+    #[serde(rename = "current_price")]
+    pub current_price: Option<String>,
+    #[serde(rename = "price_change")]
+    pub price_change: Option<String>,
+    #[serde(rename = "price_pct")]
+    pub price_pct: Option<String>,
+    pub sector: Option<String>,
+    pub industry: Option<String>,
+    // Valuation
+    #[serde(rename = "market_cap")]
+    pub market_cap: Option<String>,
+    #[serde(rename = "trailing_pe")]
+    pub trailing_pe: Option<String>,
+    #[serde(rename = "forward_pe")]
+    pub forward_pe: Option<String>,
+    pub peg: Option<String>,
+    #[serde(rename = "price_to_book")]
+    pub price_to_book: Option<String>,
+    #[serde(rename = "ev_ebitda")]
+    pub ev_ebitda: Option<String>,
+    // Profitability
+    pub eps: Option<String>,
+    pub roe: Option<String>,
+    pub roa: Option<String>,
+    pub roic: Option<String>,
+    #[serde(rename = "op_margin")]
+    pub op_margin: Option<String>,
+    #[serde(rename = "profit_margin")]
+    pub profit_margin: Option<String>,
+    // Yield & Risk
+    #[serde(rename = "dividend_yield")]
+    pub dividend_yield: Option<String>,
+    pub beta: Option<String>,
+    #[serde(rename = "fcf_yield")]
+    pub fcf_yield: Option<String>,
+    #[serde(rename = "quick_ratio")]
+    pub quick_ratio: Option<String>,
+    #[serde(rename = "short_pct")]
+    pub short_pct: Option<String>,
+    // Analyst & Holdings
+    #[serde(rename = "target_mean")]
+    pub target_mean: Option<String>,
+    #[serde(rename = "target_median")]
+    pub target_median: Option<String>,
+    #[serde(rename = "analyst_count")]
+    pub analyst_count: Option<String>,
+    #[serde(rename = "rec_mean")]
+    pub rec_mean: Option<String>,
+    #[serde(rename = "insider_pct")]
+    pub insider_pct: Option<String>,
+    #[serde(rename = "inst_pct")]
+    pub inst_pct: Option<String>,
+    // 52W Range
+    #[serde(rename = "52w_high")]
+    pub w52_high: Option<String>,
+    #[serde(rename = "52w_low")]
+    pub w52_low: Option<String>,
+    #[serde(rename = "range_position")]
+    pub range_position: Option<String>,
+    // Cash Flow
+    pub fcf: Option<String>,
+    #[serde(rename = "op_cashflow")]
+    pub op_cashflow: Option<String>,
+    #[serde(rename = "fcf_coverage")]
+    pub fcf_coverage: Option<String>,
+    // Growth
+    #[serde(rename = "total_revenue")]
+    pub total_revenue: Option<String>,
+    #[serde(rename = "total_liabilities")]
+    pub total_liabilities: Option<String>,
+    #[serde(rename = "total_cash")]
+    pub total_cash: Option<String>,
+    #[serde(rename = "earnings_growth")]
+    pub earnings_growth: Option<String>,
+    #[serde(rename = "revenue_growth")]
+    pub revenue_growth: Option<String>,
+    // Error
+    pub error: Option<String>,
+}
+
+/// Resolve python/core.py at runtime.
+/// First check app directory (installed location), then fall back to compile-time path (development).
+fn python_script_path() -> std::path::PathBuf {
+    // Try installed app directory first (runtime location)
+    if let Ok(exe_path) = std::env::current_exe() {
+        let app_dir = exe_path.parent().unwrap_or(std::path::Path::new("."));
+        let runtime_path = app_dir.join("python").join("core.py");
+        if runtime_path.exists() {
+            eprintln!("[Python] Using runtime path: {:?}", runtime_path);
+            return runtime_path;
+        }
+    }
+
+    // Fall back to compile-time path (development)
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dev_path = Path::new(manifest_dir)
+        .parent()
+        .expect("CARGO_MANIFEST_DIR should have a parent")
+        .join("python")
+        .join("core.py");
+    eprintln!("[Python] Using dev path: {:?}", dev_path);
+    dev_path
+}
+
+/// Get the path to the embedded Python executable.
+/// Looks in app directory first, then falls back to compile-time path.
+fn embedded_python_path() -> std::path::PathBuf {
+    // Try installed app directory first (runtime location)
+    if let Ok(exe_path) = std::env::current_exe() {
+        let app_dir = exe_path.parent().unwrap_or(std::path::Path::new("."));
+        let runtime_path = app_dir.join("python-embed-full").join("python.exe");
+        if runtime_path.exists() {
+            eprintln!("[Python] Using embedded Python at runtime: {:?}", runtime_path);
+            return runtime_path;
+        }
+    }
+
+    // Fall back to compile-time path (development)
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dev_path = Path::new(manifest_dir)
+        .parent()
+        .expect("CARGO_MANIFEST_DIR should have a parent")
+        .join("python-embed-full")
+        .join("python.exe");
+    eprintln!("[Python] Using embedded Python at dev: {:?}", dev_path);
+    dev_path
+}
+
+/// Check if the embedded Python distribution exists.
+fn check_embedded_python_exists() -> bool {
+    embedded_python_path().exists()
+}
+
+/// Check if Python is available via embedded distribution.
+/// Returns: (is_available, message)
+fn check_python_version() -> (bool, String) {
+    // First try embedded Python
+    if check_embedded_python_exists() {
+        let python_path = embedded_python_path();
+        match hidden_command(&python_path).arg("--version").output() {
+            Ok(output) => {
+                if output.status.success() {
+                    let version_str = String::from_utf8_lossy(&output.stdout);
+                    eprintln!("[Python] Embedded Python version: {}", version_str);
+                    return (true, format!("Embedded Python {}", version_str.trim()));
+                }
+            }
+            Err(e) => {
+                eprintln!("[Python] Embedded Python error: {}", e);
+            }
+        }
+    }
+
+    // Fall back to system Python
+    match hidden_command_str("python").arg("--version").output() {
+        Ok(output) => {
+            if output.status.success() {
+                let version_str = String::from_utf8_lossy(&output.stdout);
+                if version_str.contains("Python 3.") {
+                    if let Some(version_part) = version_str.strip_prefix("Python ") {
+                        let version_num: f64 = version_part.trim().split('.').next()
+                            .and_then(|v| v.parse().ok())
+                            .unwrap_or(0.0);
+                        if version_num >= 3.8 {
+                            return (true, format!("System Python {version_part} is available"));
+                        }
+                    }
+                    return (true, format!("Python is available"));
+                }
+                (false, "Python 3.8+ is required. Please upgrade Python.".to_string())
+            } else {
+                (false, "Python not found. Please install Python 3.8 or higher.".to_string())
+            }
+        }
+        Err(e) => {
+            (false, format!("Python not found. Error: {}. Please install Python 3.8+ from python.org/downloads", e))
+        }
+    }
+}
+
+/// Check if Python script (core.py) exists in app directory
+fn check_script_exists() -> bool {
+    if let Ok(exe_path) = std::env::current_exe() {
+        let app_dir = exe_path.parent().unwrap_or(std::path::Path::new("."));
+        let runtime_path = app_dir.join("python").join("core.py");
+        if runtime_path.exists() {
+            return true;
+        }
+    }
+    // Check dev path
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dev_path = Path::new(manifest_dir)
+        .parent()
+        .expect("CARGO_MANIFEST_DIR should have a parent")
+        .join("python")
+        .join("core.py");
+    dev_path.exists()
+}
+/// On failure, prints stderr to eprintln and returns empty string.
+fn run_python_command(args: &[&str]) -> String {
+    let script = python_script_path();
+    eprintln!("[run_python] Script: {:?}", script);
+
+    // Try embedded Python first, fall back to system Python
+    let python_path = if check_embedded_python_exists() {
+        embedded_python_path()
+    } else {
+        std::path::PathBuf::from("python")
+    };
+
+    eprintln!("[run_python] Interpreter: {:?}", python_path);
+
+    #[cfg(windows)]
+    {
+        run_python_command_win32(&python_path, &script, args)
+    }
+
+    #[cfg(not(windows))]
+    {
+        run_python_command_std(&python_path, &script, args)
+    }
+}
+
+#[cfg(windows)]
+fn run_python_command_win32(python_path: &std::path::Path, script: &std::path::Path, args: &[&str]) -> String {
+    let mut cmd = hidden_command(python_path);
+    cmd.arg(script).args(args);
+
+    match cmd.output() {
+        Ok(output) => {
+            let exit_code = output.status.code();
+            eprintln!("[run_python] Exit code: {:?}", exit_code);
+
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.is_empty() {
+                eprintln!("[run_python] stderr: {}", stderr);
+            }
+
+            if output.status.success() {
+                let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+                eprintln!("[run_python] stdout length: {}", stdout.len());
+                stdout
+            } else {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                eprintln!("[run_python] stdout (non-zero exit): {}", stdout);
+                String::new()
+            }
+        }
+        Err(e) => {
+            eprintln!("[run_python] Failed to run: {}", e);
+            String::new()
+        }
+    }
+}
+
+#[cfg(not(windows))]
+fn run_python_command_std(python_path: &std::path::Path, script: &std::path::Path, args: &[&str]) -> String {
+    match hidden_command(python_path)
+        .arg(script)
+        .args(args)
+        .output()
+    {
+        Ok(output) => {
+            let exit_code = output.status.code();
+            eprintln!("[run_python] Exit code: {:?}", exit_code);
+
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.is_empty() {
+                eprintln!("[run_python] stderr: {}", stderr);
+            }
+
+            if output.status.success() {
+                let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+                eprintln!("[run_python] stdout length: {}", stdout.len());
+                stdout
+            } else {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                eprintln!("[run_python] stdout (non-zero exit): {}", stdout);
+                String::new()
+            }
+        }
+        Err(e) => {
+            eprintln!("[run_python] Failed to run: {}", e);
+            String::new()
+        }
+    }
+}
+
+#[cfg(not(windows))]
+fn run_python_command_win32(python_path: &std::path::Path, script: &std::path::Path, args: &[&str]) -> String {
+    run_python_command_std(python_path, script, args)
+}
+
+#[tauri::command]
+async fn fetch_prices(tickers: Vec<String>) -> Result<Vec<PriceData>, String> {
+    if tickers.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let mut args: Vec<&str> = vec!["fetch-prices"];
+    args.extend(tickers.iter().map(|s| s.as_str()));
+
+    let output = run_python_command(&args);
+
+    if output.is_empty() {
+        return Ok(tickers.iter().map(|ticker| PriceData {
+            ticker: ticker.clone(),
+            name: ticker.clone(),
+            price: Some(100.0),
+            change: Some(0.0),
+            pct_change: Some(0.0),
+            volume: Some(0),
+            market_cap: Some(0),
+        }).collect());
+    }
+
+    let prices: Vec<PriceData> = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse prices: {}", e))?;
+
+    Ok(prices)
+}
+
+#[tauri::command]
+async fn search_tickers(query: String, limit: Option<usize>) -> Result<Vec<SearchResult>, String> {
+    let limit_str = limit.unwrap_or(20).to_string();
+    let output = run_python_command(&["search", &query, &limit_str]);
+
+    if output.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let results: Vec<SearchResult> = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse search results: {}", e))?;
+
+    Ok(results)
+}
+
+#[tauri::command]
+async fn load_watchlist_data() -> Result<WatchlistData, String> {
+    let output = run_python_command(&["load"]);
+
+    if output.is_empty() {
+        return Ok(WatchlistData {
+            active_wl: Some("全球主要指數".to_string()),
+            watchlists: serde_json::json!({
+                "全球主要指數": [],
+                "科技股 ETF": []
+            }),
+            lang: Some("zh-TW".to_string()),
+            theme: Some("dark".to_string()),
+            alerts: serde_json::json!({}),
+        });
+    }
+
+    let data: WatchlistData = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse data: {}", e))?;
+
+    Ok(data)
+}
+
+#[tauri::command]
+async fn save_watchlist_data(data: String) -> Result<bool, String> {
+    let output = run_python_command(&["save", &data]);
+
+    if output.is_empty() {
+        return Ok(false);
+    }
+
+    let result: serde_json::Value = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse result: {}", e))?;
+
+    Ok(result.get("success").and_then(|v| v.as_bool()).unwrap_or(false))
+}
+
+#[tauri::command]
+async fn get_chart_data(ticker: String, period: Option<String>) -> Result<Vec<ChartData>, String> {
+    let period_str = period.unwrap_or_else(|| "1d".to_string());
+    let output = run_python_command(&["chart", &ticker, &period_str]);
+
+    if output.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let data: Vec<ChartData> = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse chart data: {}", e))?;
+
+    Ok(data)
+}
+
+#[tauri::command]
+async fn get_fundamental(ticker: String) -> Result<serde_json::Value, String> {
+    let output = run_python_command(&["fundamental-full", &ticker]);
+
+    if output.is_empty() {
+        return Err("Failed to get fundamental data".to_string());
+    }
+
+    let data: serde_json::Value = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse fundamental data: {}", e))?;
+
+    Ok(data)
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct NewsItem {
+    pub title: String,
+    pub link: String,
+    pub publisher: String,
+    pub pub_date: String,
+}
+
+#[tauri::command]
+async fn get_news(ticker: String) -> Result<Vec<NewsItem>, String> {
+    let output = run_python_command(&["news", &ticker]);
+
+    if output.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let data: Vec<NewsItem> = serde_json::from_str(&output)
+        .map_err(|e| format!("Failed to parse news data: {}", e))?;
+
+    Ok(data)
+}
+
+/// Check Python environment status for diagnostics
+#[tauri::command]
+fn check_python_status() -> serde_json::Value {
+    let (python_ok, python_msg) = check_python_version();
+    let script_ok = check_script_exists();
+
+    serde_json::json!({
+        "python_installed": python_ok,
+        "python_message": python_msg,
+        "script_exists": script_ok,
+        "download_url": "https://www.python.org/downloads/"
+    })
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    // Startup diagnostics
+    let (python_ok, python_msg) = check_python_version();
+    let script_ok = check_script_exists();
+
+    eprintln!("===========================================");
+    eprintln!("yWatchlist v{} starting...", env!("CARGO_PKG_VERSION"));
+    eprintln!("Python status: {}", python_msg);
+    eprintln!("Script exists: {}", script_ok);
+    if !python_ok || !script_ok {
+        eprintln!("WARNING: Delayed quotes require Python backend!");
+        eprintln!("Download Python: https://www.python.org/downloads/");
+    }
+    eprintln!("===========================================");
+
+    tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
+        .invoke_handler(tauri::generate_handler![
+            fetch_prices,
+            search_tickers,
+            load_watchlist_data,
+            save_watchlist_data,
+            get_chart_data,
+            get_fundamental,
+            get_news,
+            check_python_status,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "tauri-test",
+  "version": "0.1.0",
+  "identifier": "com.test.tauritest",
+  "build": {
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Tauri Test",
+        "width": 800,
+        "height": 600,
+        "center": true
+      }
+    ]
+  }
+}

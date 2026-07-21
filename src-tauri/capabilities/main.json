@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/tauri-2.11.5/crates/tauri-utils/schema.json",
+  "identifier": "main-capability",
+  "description": "Main capability for yWatchlist",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:webview:default",
+    "core:webview:deny-internal-toggle-devtools",
+    "notification:default",
+    "opener:default"
+  ]
+}
