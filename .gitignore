@@ -71,6 +71,9 @@ python-embed-full/
 src-tauri/python-embed-full/
 src-tauri/python-embed.zip
 
+# Release folder (download binaries from GitHub Releases)
+release/
+
 # Test files
 test_chart_data.py
 
