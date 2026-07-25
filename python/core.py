@@ -443,6 +443,28 @@ def get_fundamental_full(ticker: str) -> dict:
         except Exception:
             pass
 
+        # Get quarterly financial data for growth section
+        quarterly_total_revenue = None
+        quarterly_total_cash = None
+        try:
+            quarterly_is = t.quarterly_income_stmt
+            quarterly_bs = t.quarterly_balance_sheet
+
+            # Total Revenue from quarterly income statement
+            if quarterly_is is not None and not quarterly_is.empty and 'Total Revenue' in quarterly_is.index:
+                val = quarterly_is.loc['Total Revenue'].iloc[0]
+                if val is not None and not pd.isna(val):
+                    quarterly_total_revenue = float(val)
+
+            # Total Cash from quarterly balance sheet
+            if quarterly_bs is not None and not quarterly_bs.empty:
+                if 'Cash Cash Equivalents And Short Term Investments' in quarterly_bs.index:
+                    val = quarterly_bs.loc['Cash Cash Equivalents And Short Term Investments'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_cash = float(val)
+        except Exception:
+            pass
+
         # 52W Range Position
         w52_high = info.get("fiftyTwoWeekHigh")
         w52_low = info.get("fiftyTwoWeekLow")
@@ -506,10 +528,10 @@ def get_fundamental_full(ticker: str) -> dict:
             "op_cashflow": safe_val(op_cashflow, "money"),
             "fcf_coverage": f"{fcf_coverage:.2f}" if fcf_coverage is not None else None,
 
-            # Growth
-            "total_revenue": safe_val(info.get("totalRevenue"), "money"),
+            # Growth - quarterly financials
+            "total_revenue": safe_val(quarterly_total_revenue, "money"),
             "total_liabilities": safe_val(total_liabilities, "money"),
-            "total_cash": safe_val(info.get("totalCash"), "money"),
+            "total_cash": safe_val(quarterly_total_cash, "money"),
             "earnings_growth": safe_val(info.get("earningsGrowth"), "percent"),
             "revenue_growth": safe_val(info.get("revenueGrowth"), "percent"),
 
