@@ -1,6 +1,6 @@
 [package]
 name = "ywatchlist"
-version = "1.0.0"
+version = "1.0.2"
 description = "yWatchlist 自選股管理器"
 authors = ["you"]
 edition = "2021"

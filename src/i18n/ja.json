@@ -2,7 +2,7 @@
   "app": {
     "title": "yWatchlist",
     "subtitle": "株価リスト管理",
-    "version": "v1.0.0"
+    "version": "v1.0.2"
   },
   "watchlists": {
     "Global Indices": "グローバル指数",

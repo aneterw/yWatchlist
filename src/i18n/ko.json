@@ -2,7 +2,7 @@
   "app": {
     "title": "yWatchlist",
     "subtitle": "주식 시세 목록 관리",
-    "version": "v1.0.0"
+    "version": "v1.0.2"
   },
   "watchlists": {
     "Global Indices": "글로벌 지수",

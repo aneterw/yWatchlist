@@ -349,12 +349,22 @@ def get_fundamental_full(ticker: str) -> dict:
 
             market_cap = info.get("marketCap", 0) or 0
 
-            # Free Cash Flow
+            # Free Cash Flow from annual cashflow table (latest period = first column)
             fcf = None
-            for key in ["Free Cash Flow", "Operating Cash Flow"]:
-                if key in cashflow.index:
-                    fcf = cashflow.loc[key].iloc[0]
-                    break
+            if 'Free Cash Flow' in cashflow.index:
+                val = cashflow.loc['Free Cash Flow'].iloc[0]
+                if val is not None and not pd.isna(val):
+                    fcf = float(val)
+            if fcf is None:
+                # Fallback: OCF + CapEx (CapEx is stored as negative)
+                try:
+                    ocf = cashflow.loc['Operating Cash Flow'].iloc[0]
+                    capex = cashflow.loc['Capital Expenditures'].iloc[0]
+                    if ocf is not None and not pd.isna(ocf):
+                        if capex is not None and not pd.isna(capex):
+                            fcf = float(ocf) + float(capex)
+                except KeyError:
+                    pass
 
             # Dividend payout
             dividend_payout = 0
@@ -434,10 +444,12 @@ def get_fundamental_full(ticker: str) -> dict:
                     op_cashflow = cashflow.loc[key].iloc[0]
                     break
 
-            # Total Liabilities
+            # Total Liabilities - with NaN check
             for key in ["Total Liabilities Net Minority Interest"]:
                 if key in balancesheet.index:
-                    total_liabilities = balancesheet.loc[key].iloc[0]
+                    val = balancesheet.loc[key].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        total_liabilities = float(val)
                     break
 
         except Exception:
@@ -446,9 +458,12 @@ def get_fundamental_full(ticker: str) -> dict:
         # Get quarterly financial data for growth section
         quarterly_total_revenue = None
         quarterly_total_cash = None
+        quarterly_total_liabilities = None
+        quarterly_fcf = None
         try:
             quarterly_is = t.quarterly_income_stmt
             quarterly_bs = t.quarterly_balance_sheet
+            quarterly_cf = t.quarterly_cashflow
 
             # Total Revenue from quarterly income statement
             if quarterly_is is not None and not quarterly_is.empty and 'Total Revenue' in quarterly_is.index:
@@ -462,6 +477,22 @@ def get_fundamental_full(ticker: str) -> dict:
                     val = quarterly_bs.loc['Cash Cash Equivalents And Short Term Investments'].iloc[0]
                     if val is not None and not pd.isna(val):
                         quarterly_total_cash = float(val)
+                # Total Liabilities from quarterly balance sheet
+                if 'Total Liabilities Net Minority Interest' in quarterly_bs.index:
+                    val = quarterly_bs.loc['Total Liabilities Net Minority Interest'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_liabilities = float(val)
+                elif 'Total Liabilities' in quarterly_bs.index:
+                    val = quarterly_bs.loc['Total Liabilities'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_liabilities = float(val)
+
+            # Free Cash Flow from quarterly cashflow
+            if quarterly_cf is not None and not quarterly_cf.empty:
+                if 'Free Cash Flow' in quarterly_cf.index:
+                    val = quarterly_cf.loc['Free Cash Flow'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_fcf = float(val)
         except Exception:
             pass
 
@@ -524,13 +555,13 @@ def get_fundamental_full(ticker: str) -> dict:
             "range_position": f"{range_position:.2f}%" if range_position is not None else None,
 
             # Cash Flow
-            "fcf": safe_val(info.get("freeCashflow"), "money"),
+            "fcf": safe_val(fcf, "money"),
             "op_cashflow": safe_val(op_cashflow, "money"),
             "fcf_coverage": f"{fcf_coverage:.2f}" if fcf_coverage is not None else None,
 
             # Growth - quarterly financials
             "total_revenue": safe_val(quarterly_total_revenue, "money"),
-            "total_liabilities": safe_val(total_liabilities, "money"),
+            "total_liabilities": safe_val(quarterly_total_liabilities, "money"),
             "total_cash": safe_val(quarterly_total_cash, "money"),
             "earnings_growth": safe_val(info.get("earningsGrowth"), "percent"),
             "revenue_growth": safe_val(info.get("revenueGrowth"), "percent"),

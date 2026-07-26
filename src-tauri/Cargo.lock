@@ -4857,7 +4857,7 @@ dependencies = [
 
 [[package]]
 name = "ywatchlist"
-version = "1.0.0"
+version = "1.0.2"
 dependencies = [
  "log",
  "serde",
