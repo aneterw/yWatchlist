@@ -331,15 +331,12 @@ def get_fundamental_full(ticker: str) -> dict:
             price_pct = (price_change / prev_close) * 100
 
         # Calculate advanced metrics
-        fcf = None
         roic = None
         fcf_yield = None
         fcf_coverage = None
         op_cashflow = None
+        total_liabilities = None
         range_position = None
-        quarterly_total_revenue = None
-        quarterly_total_cash = None
-        quarterly_total_liabilities = None
 
         # Extra stock info
         today_high = info.get("fiftyDayHigh") or info.get("dayHigh")
@@ -352,17 +349,20 @@ def get_fundamental_full(ticker: str) -> dict:
 
             market_cap = info.get("marketCap", 0) or 0
 
-            # Free Cash Flow - from cashflow table directly
+            # Free Cash Flow from annual cashflow table (latest period = first column)
             fcf = None
             if 'Free Cash Flow' in cashflow.index:
-                fcf = cashflow.loc['Free Cash Flow'].iloc[0]
-            else:
+                val = cashflow.loc['Free Cash Flow'].iloc[0]
+                if val is not None and not pd.isna(val):
+                    fcf = float(val)
+            if fcf is None:
                 # Fallback: OCF + CapEx (CapEx is stored as negative)
                 try:
                     ocf = cashflow.loc['Operating Cash Flow'].iloc[0]
                     capex = cashflow.loc['Capital Expenditures'].iloc[0]
-                    if ocf is not None and capex is not None:
-                        fcf = ocf + capex
+                    if ocf is not None and not pd.isna(ocf):
+                        if capex is not None and not pd.isna(capex):
+                            fcf = float(ocf) + float(capex)
                 except KeyError:
                     pass
 
@@ -444,41 +444,55 @@ def get_fundamental_full(ticker: str) -> dict:
                     op_cashflow = cashflow.loc[key].iloc[0]
                     break
 
-            # Total Liabilities from balance sheet
-            for key in ["Total Liabilities Net Minority Interest", "Total Liabilities"]:
+            # Total Liabilities - with NaN check
+            for key in ["Total Liabilities Net Minority Interest"]:
                 if key in balancesheet.index:
-                    total_liabilities = balancesheet.loc[key].iloc[0]
+                    val = balancesheet.loc[key].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        total_liabilities = float(val)
                     break
 
-        except Exception as e:
-            print(f"Error getting financial data: {e}", file=sys.stderr)
+        except Exception:
+            pass
 
-        # Get quarterly data for growth section (separate try to avoid losing other data)
+        # Get quarterly financial data for growth section
         quarterly_total_revenue = None
         quarterly_total_cash = None
         quarterly_total_liabilities = None
+        quarterly_fcf = None
         try:
-            quarterly_bs = t.quarterly_balance_sheet
             quarterly_is = t.quarterly_income_stmt
-
+            quarterly_bs = t.quarterly_balance_sheet
+            quarterly_cf = t.quarterly_cashflow
 
             # Total Revenue from quarterly income statement
             if quarterly_is is not None and not quarterly_is.empty and 'Total Revenue' in quarterly_is.index:
-                quarterly_total_revenue = quarterly_is.loc['Total Revenue'].iloc[0]
+                val = quarterly_is.loc['Total Revenue'].iloc[0]
+                if val is not None and not pd.isna(val):
+                    quarterly_total_revenue = float(val)
 
             # Total Cash from quarterly balance sheet
             if quarterly_bs is not None and not quarterly_bs.empty:
                 if 'Cash Cash Equivalents And Short Term Investments' in quarterly_bs.index:
-                    quarterly_total_cash = quarterly_bs.loc['Cash Cash Equivalents And Short Term Investments'].iloc[0]
-                else:
-
-            # Total Liabilities from quarterly balance sheet
-            if quarterly_bs is not None and not quarterly_bs.empty:
+                    val = quarterly_bs.loc['Cash Cash Equivalents And Short Term Investments'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_cash = float(val)
+                # Total Liabilities from quarterly balance sheet
                 if 'Total Liabilities Net Minority Interest' in quarterly_bs.index:
-                    quarterly_total_liabilities = quarterly_bs.loc['Total Liabilities Net Minority Interest'].iloc[0]
+                    val = quarterly_bs.loc['Total Liabilities Net Minority Interest'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_liabilities = float(val)
                 elif 'Total Liabilities' in quarterly_bs.index:
-                    quarterly_total_liabilities = quarterly_bs.loc['Total Liabilities'].iloc[0]
-                else:
+                    val = quarterly_bs.loc['Total Liabilities'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_total_liabilities = float(val)
+
+            # Free Cash Flow from quarterly cashflow
+            if quarterly_cf is not None and not quarterly_cf.empty:
+                if 'Free Cash Flow' in quarterly_cf.index:
+                    val = quarterly_cf.loc['Free Cash Flow'].iloc[0]
+                    if val is not None and not pd.isna(val):
+                        quarterly_fcf = float(val)
         except Exception:
             pass
 
